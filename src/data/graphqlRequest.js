@@ -1,8 +1,8 @@
-const got = require('got');
+const got = require("got");
 
 const url = 'https://api.tarkov.dev/graphql';
 
-const graphqlRequest = async (options) => {
+async function graphqlRequest (options) {
     if (!options.hasOwnProperty('graphql')) {
         return Promise.reject(new Error('You must provide a graphql query'));
     }
@@ -12,9 +12,9 @@ const graphqlRequest = async (options) => {
         body: JSON.stringify({
             query: options.graphql,
         }),
-        headers: { "user-agent": "Tarkov-Cheese-Bot" },
+        headers: { "user-agent": "stash-tarkov-dev" },
         resolveBodyOnly: true,
     });
 };
 
-export default graphqlRequest;
+module.exports.graphqlRequest = graphqlRequest
