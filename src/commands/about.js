@@ -25,7 +25,7 @@ module.exports = {
     embed.setDescription('Discord bot for Escape from Tarkov. Built during Swamphacks2023 using the Tarkov.dev API');
     embed.setAuthor({
         name: ('Swamped - Escape from Tarkov Discord Bot.'),
-        iconURL: 'https://swamphacks.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F48712983-e6c4-4ca9-a493-8de1bfacf558%2Ficon.svg?table=block&id=455b6b9e-5ddd-4973-be28-35eec3ef9f8d&spaceId=549e2db5-f787-486b-9c04-9f3bfc79c5ee&userId=&cache=v2',
+        iconURL: 'https://static.wikia.nocookie.net/escapefromtarkov_gamepedia/images/e/e6/Tetriz_ins.png/revision/latest?cb=20181231052932',
         url: 'https://github.com/CainanConway',
     });
     embed.addFields({
