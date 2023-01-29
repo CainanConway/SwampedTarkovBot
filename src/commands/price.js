@@ -1,6 +1,6 @@
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const gameData = require('../data/gameData.js');
-const i18next = require('i18next');
+//const i18next = require('i18next').getFixedT;
 const moment = require('moment/min/moment-with-locales.js');
 
 const MAX_ITEMS = 2;
@@ -13,13 +13,14 @@ module.exports = {
             return option.setName('name')
                 .setDescription('Item name to search for')
                 .setAutocomplete(true)
+                .setRequired(true);
         }),
 
     async execute(interaction) {
         await interaction.deferReply();
 
         const searchString = interaction.options.getString('name');
-        const t = i18next.getFixedT(interaction.locale);
+        //const t = i18next.(interaction.locale);
 
         const [items] = await Promise.all([
             gameData.items.getAll(interaction.locale),
@@ -48,7 +49,7 @@ module.exports = {
             const item = matchedItems[i];
             const embed = new EmbedBuilder();
 
-            let body = `+++('Price and Item Details'):+++\n`;
+            let body = `🔹Price and Item Details🔹\n`;
             embed.setTitle(item.name);
             embed.setURL(item.link);
             moment.locale(interaction.locale);
@@ -58,13 +59,13 @@ module.exports = {
 
             const size = parseInt(item.width) * parseInt(item.height);
             let bestTraderName = false;
-            let bestTraderPrices = -1;
+            let bestTraderPrice = -1;
 
-            // for (const traderPrice of item.traderPrices) {
-            //     if (traderPrice.priceRUB > bestTraderPrice) {
-            //         bestTraderPrice = traderPrice.priceRUB;
-            //     }
-            // }
+            for (const traderPrice of item.traderPrices) {
+                if (traderPrice.priceRUB > bestTraderPrice) {
+                    bestTraderPrice = traderPrice.priceRUB;
+                }
+            }
 
             let sellTo = 'Flea Market';
             if (item.avg24hPrice > 0) {
@@ -93,7 +94,7 @@ module.exports = {
         if (MAX_ITEMS < matchedItems.length) {
             const ending = new EmbedBuilder();
 
-            ending.setTitle("+" + (matchedItems.length - MAX_ITEMS) + ` ${t('more')}`);
+            ending.setTitle("+" + (matchedItems.length - MAX_ITEMS) + ` 'more' `);
             ending.setURL("https://tarkov.dev/?search=" + encodeURIComponent(searchString));
 
             let otheritems = '';
@@ -102,7 +103,7 @@ module.exports = {
                 const itemname = `[${matchedItems[i].name}](${matchedItems[i].link})`;
 
                 if (itemname.length + 2 + otheritems.length > 2048) {
-                    ending.setFooter({text: `${matchedItems.length-i} ${t('additional results not shown.')}`});
+                    ending.setFooter({text: `${matchedItems.length-i} 'additional results not shown.' `});
 
                     break;
                 }

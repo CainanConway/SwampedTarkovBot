@@ -12,7 +12,7 @@ async function graphqlRequest (options) {
         body: JSON.stringify({
             query: options.graphql,
         }),
-        headers: { "user-agent": "stash-tarkov-dev" },
+        headers: { "user-agent": "swamphacks2023" },
         resolveBodyOnly: true,
     });
 };
