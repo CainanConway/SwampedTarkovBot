@@ -8,4 +8,7 @@ RUN npm install
 
 COPY . .
 
+ARG var
+ENV var = ${var}
+
 CMD ["node", "./src/bot.js"]
