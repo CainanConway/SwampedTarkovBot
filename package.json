@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/bot.js",
   "scripts": {
+    "start": "node src/bot.js",
     "test": "node ."
   },
   "keywords": [],
