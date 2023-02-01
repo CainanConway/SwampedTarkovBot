@@ -9,6 +9,6 @@ RUN npm install
 COPY . .
 
 ARG var
-ENV var = ${var}
+ENV token = ${var}
 
 CMD ["node", "./src/bot.js"]
