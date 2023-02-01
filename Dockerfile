@@ -1,5 +1,8 @@
 FROM node:alpine
 
+ARG arg1
+ENV token $arg1
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -7,8 +10,5 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-
-ARG var
-ENV token = ${var}
 
 CMD ["node", "./src/bot.js"]
