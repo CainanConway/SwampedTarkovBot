@@ -60,10 +60,27 @@ module.exports = {
             const size = parseInt(item.width) * parseInt(item.height);
             let bestTraderName = false;
             let bestTraderPrice = -1;
+            let bestTraderCurrency = false;
 
             for (const traderPrice of item.traderPrices) {
                 if (traderPrice.priceRUB > bestTraderPrice) {
                     bestTraderPrice = traderPrice.priceRUB;
+                    bestTraderName = traderPrice.trader.name;
+
+                    switch(traderPrice.currency) {
+                        case 'RUB':
+                            bestTraderCurrency = "₽";
+                            break;
+                        case 'USD':
+                            bestTraderCurrency = "$";
+                            break;
+                        case 'EUR':
+                            bestTraderCurrency = "€";
+                            break;
+                        default:
+                            bestTraderCurrency = "";
+                            break;
+                    }
                 }
             }
 
@@ -73,10 +90,22 @@ module.exports = {
                 embed.addFields({name: 'Flea Price (avg)', value: fleaPrice, inline: true});
             }
 
+            if (item.lastLowPrice > 0) {
+                let fleaPrice = parseInt(item.lastLowPrice).toLocaleString(interaction.locale) + "₽";
+                embed.addFields({name: 'Flea Price (low)', value: fleaPrice, inline: true});
+                // Add quicksell price
+                body += `• 'Sell to  \`${sellTo}\` for': \`${fleaPrice}\`\n`;
+            }
+
+            if(bestTraderPrice > 0 && bestTraderName) {
+                let price = parseInt(bestTraderPrice).toLocaleString(interaction.locale) + bestTraderCurrency;
+                embed.addFields({name: bestTraderName, value: price, inline: true});
+            }
+
             if (embed.data.fields?.length == 0) {
                 embed.setDescription(t('No prices available.'));
             }
-    
+            
             // Add the item weight
             body += `• 'Weight': \`${item.weight} 'kg'\`\n`;
     
