@@ -57,7 +57,7 @@ module.exports = {
 
             embed.setThumbnail(item.iconLink);
 
-            const size = parseInt(item.width) * parseInt(item.height);
+            const SIZE = parseInt(item.width) * parseInt(item.height);
             let bestTraderName = false;
             let bestTraderPrice = -1;
             let bestTraderCurrency = false;
@@ -84,24 +84,38 @@ module.exports = {
                 }
             }
 
-            let sellTo = 'Flea Market';
-            if (item.avg24hPrice > 0) {
-                let fleaPrice = parseInt(item.avg24hPrice).toLocaleString(interaction.locale) + "₽";
-                embed.addFields({name: 'Flea Price (avg)', value: fleaPrice, inline: true});
+            const FLEA_PRICE_AVG = parseInt(item.avg24hPrice)
+            const FLEA_PRICE_LOW = parseInt(item.lastLowPrice)
+            let sellTo = 'Flea Market'
+
+            if (FLEA_PRICE_AVG > 0) {
+                let tempPrice = FLEA_PRICE_AVG.toLocaleString(
+                    interaction.locale) + "₽";
+        
+                let pricePerSlot = (FLEA_PRICE_AVG / SIZE).toLocaleString(
+                    interaction.locale) + "₽/slot";
+
+                embed.addFields({name: 'Flea Price (avg)', value: tempPrice, inline: true});
+                embed.addFields({name: 'Price Per Slot', value: pricePerSlot, inline: true});
             }
 
-            if (item.lastLowPrice > 0) {
-                let fleaPrice = parseInt(item.lastLowPrice).toLocaleString(interaction.locale) + "₽";
-                embed.addFields({name: 'Flea Price (low)', value: fleaPrice, inline: true});
+            if (FLEA_PRICE_LOW > 0) {
+                let tempPrice = FLEA_PRICE_LOW.toLocaleString(
+                    interaction.locale) + "₽";
+
+                embed.addFields({name: 'Flea Price (low)', value: tempPrice, inline: true});
                 // Add quicksell price
-                body += `• 'Sell to  \`${sellTo}\` for': \`${fleaPrice}\`\n`;
+                body += `• 'Sell to  \`${sellTo}\` for': \`${tempPrice}\`\n`;
             }
 
             if(bestTraderPrice > 0 && bestTraderName) {
-                let price = parseInt(bestTraderPrice).toLocaleString(interaction.locale) + bestTraderCurrency;
-                embed.addFields({name: bestTraderName, value: price, inline: true});
+                sellTo = bestTraderName;
+                let tempPrice = parseInt(bestTraderPrice).toLocaleString(
+                    interaction.locale) + bestTraderCurrency;
+                
+                embed.addFields({name: bestTraderName, value: tempPrice, inline: true});
             }
-
+            
             if (embed.data.fields?.length == 0) {
                 embed.setDescription(t('No prices available.'));
             }
