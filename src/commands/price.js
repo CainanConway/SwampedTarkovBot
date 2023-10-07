@@ -61,6 +61,7 @@ module.exports = {
             let bestTraderName = false;
             let bestTraderPrice = -1;
             let bestTraderCurrency = false;
+            let optimalPrice = -1;
 
             for (const traderPrice of item.traderPrices) {
                 if (traderPrice.priceRUB > bestTraderPrice) {
@@ -86,36 +87,68 @@ module.exports = {
 
             const FLEA_PRICE_AVG = parseInt(item.avg24hPrice)
             const FLEA_PRICE_LOW = parseInt(item.lastLowPrice)
-            let sellTo = 'Flea Market'
+            let sellTo = ''
 
             if (FLEA_PRICE_AVG > 0) {
                 let tempPrice = FLEA_PRICE_AVG.toLocaleString(
                     interaction.locale) + "₽";
-        
+
                 let pricePerSlot = (FLEA_PRICE_AVG / SIZE).toLocaleString(
                     interaction.locale) + "₽/slot";
 
+                if (SIZE > 1) {
+                    tempPrice += `\r\n \`${pricePerSlot}\``;
+                }
+                
                 embed.addFields({name: 'Flea Price (avg)', value: tempPrice, inline: true});
-                embed.addFields({name: 'Price Per Slot', value: pricePerSlot, inline: true});
             }
 
             if (FLEA_PRICE_LOW > 0) {
+                
+
                 let tempPrice = FLEA_PRICE_LOW.toLocaleString(
                     interaction.locale) + "₽";
 
+                let pricePerSlot = (FLEA_PRICE_LOW / SIZE).toLocaleString(
+                    interaction.locale) + "₽/slot";
+
+                if (SIZE > 1) {
+                    tempPrice += `\r\n \`${pricePerSlot}\``;
+                }
+
                 embed.addFields({name: 'Flea Price (low)', value: tempPrice, inline: true});
-                // Add quicksell price
-                body += `• 'Sell to  \`${sellTo}\` for': \`${tempPrice}\`\n`;
+                
+                if(FLEA_PRICE_LOW > optimalPrice){
+                    optimalPrice = FLEA_PRICE_LOW
+                    sellTo = 'Flea Market'
+                }
+
             }
 
             if(bestTraderPrice > 0 && bestTraderName) {
-                sellTo = bestTraderName;
                 let tempPrice = parseInt(bestTraderPrice).toLocaleString(
                     interaction.locale) + bestTraderCurrency;
-                
+        
+                let pricePerSlot = (bestTraderPrice / SIZE).toLocaleString(
+                    interaction.locale) + bestTraderCurrency + "/slot";
+
+                if (SIZE > 1) {
+                    tempPrice += `\r\n \`${pricePerSlot}\``;
+                }
+
                 embed.addFields({name: bestTraderName, value: tempPrice, inline: true});
+
+                if(bestTraderPrice > optimalPrice){
+                    optimalPrice = bestTraderPrice
+                    sellTo = bestTraderName
+                }
             }
             
+            // Add quicksell price
+            body += `• 'Sell to  \`${sellTo}\` for': \`${parseInt(optimalPrice).toLocaleString(
+                interaction.locale) + "₽"
+            }\`\n`;
+
             if (embed.data.fields?.length == 0) {
                 embed.setDescription(t('No prices available.'));
             }
